@@ -13,11 +13,25 @@ import uuid
 
 from dataclasses import dataclass
 
+@dataclass
+class Entry:
+    id: uuid.UUID
+    name: str
+    amount: float
+    category: str | None
 
-engine_url = "data.engine"
+    @classmethod
+    def from_db(cls, id: str, name: str, amount: float, category: str | None):
+        return cls(
+            id,
+            name,
+            amount,
+            category,
+        )
+
+
 engine = None
 metadata = MetaData()
-already_created = False
 budget_table = Table(
             "budget",
             metadata,
@@ -38,21 +52,6 @@ def init_db():
     metadata.create_all(get_engine())
 
 
-@dataclass
-class Entry:
-    id: uuid.UUID
-    name: str
-    amount: float
-    category: str | None
-
-    @classmethod
-    def from_db(cls, id: str, name: str, amount: float, category: str | None):
-        return cls(
-            id,
-            name,
-            amount,
-            category,
-        )
 
 
 def create_entry(name: str, amount: float, category: str | None = None) -> None:

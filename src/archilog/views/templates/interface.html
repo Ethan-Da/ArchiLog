@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Interface WEB</title>
+</head>
+<body style="padding: 10px">
+
+<h1>Gestion du budget</h1>
+
+<h2>Ajout d'une dépense</h2>
+<form style="border: antiquewhite 2px solid; padding:20px; display: flex; flex-direction: column; width: 25%;" action="/budget/add/" method="post">
+    <label for="Name">Nom</label>
+    <input type="text" id="Name" name="Name">
+    <label for="Price">Prix</label>
+    <input type="number" step="0.01" id="Price" name="Price">
+    <label for="Category">Catégorie</label>
+    <input type="text" id="Category" name="Category">
+    <input type="submit" value="Ajouter">
+</form>
+
+<h2>Liste des dépenses</h2>
+<table style="border: blanchedalmond 2px solid">
+    <tr>
+    <th>ID</th><th>Nom</th><th>Prix</th><th>Catégorie</th><th></th><th>Modification</th>
+    </tr>
+
+    {% for ligne in list %}
+        <tr>
+            <td>{{ligne.id}}</td>
+            <td>{{ligne.name}}</td>
+            <td>{{ligne.amount}}</td>
+            <td>{{ligne.category}}</td>
+            <td><button>
+                <a href="/budget/delete/{{ligne.id}}">
+                Supprimer
+                </a>
+            </button></td>
+            <td>
+                <form action="/budget/update/" method="post">
+                    <input type="hidden" id="uuid" name="id" value="{{ligne.id}}" >
+                    <label for="name_update">Nom</label>
+                    <input type="text" id="name_update" name="Name">
+                    <label for="price_update">Prix</label>
+                    <input type="number" step="0.01" id="price_update" name="Price">
+                    <label for="category_update">Catégorie</label>
+                    <input type="text" id="category_update" name="Category">
+                    <input type="submit" value="Modifier">
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+<h2>Ajout de plusieurs dépenses avec csv</h2>
+
+<form action="">
+    <label for="csv-file">Votre fichier csv : </label>
+    <input type="file" name="csv-file" id="csv-file">
+    <input style="border: red 2px solid" type="submit" value="Ajouter tout">
+</form>
+
+
+
+</body>
+</html>

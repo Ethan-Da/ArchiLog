@@ -29,7 +29,6 @@ class Entry:
             category,
         )
 
-
 engine = None
 metadata = MetaData()
 budget_table = Table(
@@ -50,9 +49,6 @@ def get_engine():
 
 def init_db():
     metadata.create_all(get_engine())
-
-
-
 
 def create_entry(name: str, amount: float, category: str | None = None) -> None:
     stmt = budget_table.insert()

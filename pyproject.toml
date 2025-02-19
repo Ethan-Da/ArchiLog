@@ -6,6 +6,7 @@ readme = "README.md"
 dependencies = [
     "click>=8.1.7",
     "sqlalchemy>=2.0.38",
+    "flask>=3.1.0",
 ]
 requires-python = ">=3.10"
 
@@ -13,7 +14,7 @@ requires-python = ">=3.10"
 text = "MIT"
 
 [project.scripts]
-archilog = "archilog.views:cli"
+archilog = "archilog.views.viewsClick:cli"
 
 [build-system]
 requires = [

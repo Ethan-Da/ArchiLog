@@ -9,7 +9,7 @@
 <h1>Gestion du budget</h1>
 
 <h2>Ajout d'une dépense</h2>
-<form style="border: antiquewhite 2px solid; padding:20px; display: flex; flex-direction: column; width: 25%;" action="/budget/add/" method="post">
+<form style="border: antiquewhite 2px solid; padding:20px; display: flex; flex-direction: column; width: 25%;" action="/add" method="post">
     <label for="Name">Nom</label>
     <input type="text" id="Name" name="Name">
     <label for="Price">Prix</label>
@@ -32,12 +32,12 @@
             <td>{{ligne.amount}}</td>
             <td>{{ligne.category}}</td>
             <td><button>
-                <a href="/budget/delete/{{ligne.id}}">
+                <a href="/delete/{{ligne.id}}">
                 Supprimer
                 </a>
             </button></td>
             <td>
-                <form action="/budget/update/" method="post">
+                <form action="/update" method="post">
                     <input type="hidden" id="uuid" name="id" value="{{ligne.id}}" >
                     <label for="name_update">Nom</label>
                     <input type="text" id="name_update" name="Name">
@@ -55,13 +55,17 @@
 
 <h2>Ajout de plusieurs dépenses avec csv</h2>
 
-<form action="">
-    <label for="csv-file">Votre fichier csv : </label>
-    <input type="file" name="csv-file" id="csv-file">
+<form action="/importcsv" method="post" enctype="multipart/form-data">
+    <label for="csv-file-import">Votre fichier csv : </label>
+    <input type="file" name="csv-file" id="csv-file-import" accept=".csv" required>
     <input style="border: red 2px solid" type="submit" value="Ajouter tout">
 </form>
 
+<h2>Export en csv</h2>
 
+<form action="/exportcsv" method="post">
+    <input type="submit" id="export" name="export" value="Exportez">
+</form>
 
 </body>
 </html>

@@ -8,6 +8,7 @@ from sqlalchemy import delete
 from sqlalchemy import Uuid
 from sqlalchemy import String
 from sqlalchemy import Float
+from archilog import config
 
 import uuid
 
@@ -29,8 +30,11 @@ class Entry:
             category,
         )
 
+
+
 engine = None
 metadata = MetaData()
+
 budget_table = Table(
             "budget",
             metadata,
@@ -40,12 +44,12 @@ budget_table = Table(
             Column("category", String, nullable=True),
         )
 
+
 def get_engine():
     global engine
     if engine is None:
-        engine = create_engine("sqlite:///data.db", echo=True)
+        engine = create_engine(config.DATABASE_URL, echo=config.DEBUG)
     return engine
-
 
 def init_db():
     metadata.create_all(get_engine())

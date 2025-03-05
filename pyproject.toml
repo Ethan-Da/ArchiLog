@@ -14,7 +14,7 @@ requires-python = ">=3.10"
 text = "MIT"
 
 [project.scripts]
-archilog = "archilog.views.viewsClick:cli"
+archilog = "archilog.views.commands:cli"
 
 [build-system]
 requires = [
@@ -22,3 +22,6 @@ requires = [
 ]
 build-backend = "pdm.backend"
 
+[tool.pdm.scripts]
+_.env_file = "dev.env"
+start = "flask --app archilog.views --debug run"

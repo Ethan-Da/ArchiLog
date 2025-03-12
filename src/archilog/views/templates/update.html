@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Interface WEB</title>
+</head>
+<body style="padding: 10px">
+
+<h1>Gestion du budget</h1>
+
+<h2>Modification de :</h2>
+
+<table style="border: blanchedalmond 2px solid">
+    <tr>
+    <th>ID</th><th>Nom</th><th>Prix</th><th>Catégorie</th><th></th><th>Modification</th>
+    </tr>
+        <tr>
+            <td>{{ligne.id}}</td>
+            <td>{{ligne.name}}</td>
+            <td>{{ligne.amount}}</td>
+            <td>{{ligne.category}}</td>
+            <td>
+                <button>
+                    <a href="/delete/{{ligne.id}}">
+                        Supprimer
+                    </a>
+                </button>
+            </td>
+            <td>
+                <form action="/do_update/{{ligne.id}}" method="post">
+                    {{ updateform.csrf_token }}
+                    {{updateform.name.label}} {{updateform.name(size=20)}}
+                    {{updateform.price.label}} {{updateform.price()}}
+                    {{updateform.category.label}} {{updateform.category()}}
+                    <input type="submit" value="Modifier">
+                </form>
+            </td>
+        </tr>
+</table>
+
+</body>

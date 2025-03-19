@@ -28,7 +28,7 @@
             </td>
             <td>
                 <form action="/do_update/{{ligne.id}}" method="post">
-                    {{ updateform.csrf_token }}
+                    {{updateform.csrf_token }}
                     {{updateform.name.label}} {{updateform.name(size=20)}}
                     {{updateform.price.label}} {{updateform.price()}}
                     {{updateform.category.label}} {{updateform.category()}}

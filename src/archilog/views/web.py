@@ -1,18 +1,13 @@
 from flask import url_for, redirect, flash, abort
-from flask import request
 from sqlalchemy.exc import IntegrityError
-from unicodedata import category
 import logging
-from archilog.models import *
+from archilog.models import create_entry, delete_entry, get_entry, get_all_entries, update_entry
 from archilog.services import import_from_csv, export_to_csv
-
 from flask import Blueprint, render_template, Response, request
 import io
-
 from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField
 from wtforms.validators import DataRequired
-
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -28,7 +23,7 @@ class AddForm(FlaskForm):
     category = StringField("category", validators=[])
 
 web_ui = Blueprint("web_ui", __name__, url_prefix="/")
-api = Blueprint("api", __name__, url_prefix="/api")
+
 
 auth = HTTPBasicAuth()
 users = {

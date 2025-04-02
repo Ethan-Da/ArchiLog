@@ -1,6 +1,11 @@
+from dataclasses import replace
+from io import StringIO, BytesIO
+
 from flask import Blueprint, render_template, Response, request
 
 from pydantic import BaseModel, Field
+from sqlalchemy.testing.provision import follower_url_from_main
+
 from archilog.models import create_entry, delete_entry, get_entry, get_all_entries, update_entry
 from flask_httpauth import HTTPTokenAuth
 from spectree import SpecTree, SecurityScheme, BaseFile
@@ -29,21 +34,25 @@ spec = SpecTree("flask",
 auth = HTTPTokenAuth(scheme='Bearer')
 
 valid_tokens = {
-    "829HKZBDIY89I2HZ" : ["admin", "user"],
-    "UIYUI9018UZHA902" : ["user"]
+    "829HKZBDIY89I2HZ" : {'user' : 'test', 'roles' : ["admin", "user"]},
+    "UIYUI9018UZHA902" : {'user' : 'test2','roles' : ["user"]}
 }
+
+
 
 #========================== ROUTES API =============================#
 
 #==CRUD==#
 
 @api.route("/entries", methods=["GET"])
-@auth.login_required
+@spec.validate(tags=["api"])
+@auth.login_required(role='admin')
 def get_all():
     entries = get_all_entries()
     return entries
 
 @api.route("/entries/<id>", methods=["GET"])
+@spec.validate(tags=["api"])
 @auth.login_required
 def get(id):
     entry = get_entry(id)
@@ -51,21 +60,21 @@ def get(id):
 
 @api.route("/entries", methods=["POST"])
 @spec.validate(tags=["api"])
-@auth.login_required(role="admin")
+@auth.login_required()
 def add(json: EntryData):
     create_entry(json["name"], json["amount"], json["category"])
     return
 
 @api.route("/entries/<id>", methods=["PATCH"])
 @spec.validate(tags=["api"])
-@auth.login_required(role="admin")
+@auth.login_required()
 def update(id, json: EntryData):
     update_entry(id, json["name"], json["amount"], json["category"])
     return
 
 @api.route("/entries/<id>", methods=["DELETE"])
 @spec.validate(tags=["api"])
-@auth.login_required(role="admin")
+@auth.login_required()
 def delete(id):
     delete_entry(id)
     return
@@ -73,30 +82,33 @@ def delete(id):
 #==RPC==#
 
 class File(BaseModel):
-    uid: str
     file: BaseFile
 
-@api.route("/export", methods=["POST"])
-@auth.login_required(role="admin")
+@api.route("/entries/export", methods=["POST"])
+@spec.validate(tags=["api"])
+@auth.login_required()
 def export_csv():
     file = export_to_csv()
     return file
 
-@api.route("/import", methods=["POST"])
+@api.route("/entries/import", methods=["POST"])
 @spec.validate(tags=["api"])
-@auth.login_required(role="admin")
-def import_csv(file : File):
-    return import_from_csv(file)
+@auth.login_required()
+def import_csv(form : File):
+    return import_from_csv(form.file)
 
 
  #==============AUTHENTIFICATION================#
 
 @auth.verify_token
 def verify_token(token):
+    print(token)
     if token in valid_tokens:
-        return True
+        return valid_tokens.get(token)
     return False
 
 @auth.get_user_roles
 def get_user_roles(token):
-    return valid_tokens.get(token)
+    print(valid_tokens.get(token)['roles'])
+    return valid_tokens.get(token)['roles']
+

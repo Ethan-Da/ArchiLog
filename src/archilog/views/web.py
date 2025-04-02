@@ -5,6 +5,7 @@ from archilog.models import create_entry, delete_entry, get_entry, get_all_entri
 from archilog.services import import_from_csv, export_to_csv
 from flask import Blueprint, render_template, Response, request
 import io
+import uuid
 from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField
 from wtforms.validators import DataRequired
@@ -22,7 +23,7 @@ class AddForm(FlaskForm):
     price = FloatField("price", validators=[DataRequired()])
     category = StringField("category", validators=[])
 
-web_ui = Blueprint("web_ui", __name__, url_prefix="/")
+web_ui = Blueprint("web_ui", __name__, url_prefix="/web_ui")
 
 
 auth = HTTPBasicAuth()

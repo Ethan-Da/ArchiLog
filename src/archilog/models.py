@@ -1,18 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy import MetaData
-from sqlalchemy import Table
-from sqlalchemy import Column
-from sqlalchemy import select
-from sqlalchemy import update
-from sqlalchemy import delete
-from sqlalchemy import Uuid
-from sqlalchemy import String
-from sqlalchemy import Float
+from sqlalchemy import create_engine, MetaData, Table, Column, select, delete, Uuid, String, Float
 from archilog import config
-
 import uuid
-
 from dataclasses import dataclass
+
 
 @dataclass
 class Entry:
@@ -31,18 +21,17 @@ class Entry:
         )
 
 
-
 engine = None
 metadata = MetaData()
 
 budget_table = Table(
-            "budget",
-            metadata,
-            Column("id", Uuid, primary_key=True, default=uuid.uuid4),
-            Column("name", String, unique=True, nullable=False),
-            Column("amount", Float, nullable=False),
-            Column("category", String, nullable=True),
-        )
+    "budget",
+    metadata,
+    Column("id", Uuid, primary_key=True, default=uuid.uuid4),
+    Column("name", String, unique=True, nullable=False),
+    Column("amount", Float, nullable=False),
+    Column("category", String, nullable=True),
+)
 
 
 def get_engine():
@@ -51,8 +40,10 @@ def get_engine():
         engine = create_engine(config.DATABASE_URL, echo=config.DEBUG)
     return engine
 
+
 def init_db():
     metadata.create_all(get_engine())
+
 
 def create_entry(name: str, amount: float, category: str | None = None) -> None:
     stmt = budget_table.insert()
@@ -65,7 +56,6 @@ def create_entry(name: str, amount: float, category: str | None = None) -> None:
 
 
 def get_entry(id: uuid.UUID) -> Entry:
-
     stmt = select(budget_table).where(budget_table.c.id == id)
 
     with get_engine().begin() as conn:
@@ -77,9 +67,7 @@ def get_entry(id: uuid.UUID) -> Entry:
             raise Exception(f"No entry with id {id}")
 
 
-
 def get_all_entries() -> list[Entry]:
-
     stmt = select(budget_table)
 
     with get_engine().begin() as conn:
@@ -98,13 +86,12 @@ def update_entry(id: uuid.UUID, name: str | None, amount: float | None, category
         stmt = stmt.values(category=category)
     if amount:
         stmt = stmt.values(amount=amount)
-    
+
     with get_engine().begin() as conn:
         conn.execute(stmt)
 
 
 def delete_entry(id: uuid.UUID) -> None:
-
     stmt = delete(budget_table).where(budget_table.c.id == id)
 
     with get_engine().begin() as conn:

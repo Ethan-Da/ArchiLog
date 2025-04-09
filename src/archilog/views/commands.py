@@ -1,6 +1,5 @@
 import click
 import uuid
-
 import archilog.models as models
 import archilog.services as services
 
@@ -47,7 +46,7 @@ def import_csv(csv_file):
 @cli.command()
 @click.option("--id", type=click.UUID, required=True)
 @click.option("-n", "--name", default=None)
-@click.option("-a", "--amount", type=float, default= None)
+@click.option("-a", "--amount", type=float, default=None)
 @click.option("-c", "--category", default=None)
 def update(id: uuid.UUID, name: str, amount: float, category: str | None):
     models.update_entry(id, name, amount, category)
